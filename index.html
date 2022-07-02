@@ -267,8 +267,8 @@
         });
 
         // assemble string sequence of info for tooltip (end line break with + operator)
-        let tooltipInfo = `<b>${props["NAME"]} Grid</b></br>
-    ${props[attributeValue].toLocaleString()}`;
+        let tooltipInfo = `<b>Grid ${props["NAME"]}</b></br>
+    ${props[attributeValue].toLocaleString()} Artifacts`;
 
         // bind a tooltip to layer with county-specific information
         layer.bindTooltip(tooltipInfo, {
