@@ -69,6 +69,30 @@
       clear: both;
     }
 
+    .first-column {
+      float: left;
+      width: 49%;
+      padding-right: 2%;
+    }
+
+    .second-column {
+      float: left;
+      width: 49%;
+    }
+
+    /* Clear floats after columns */
+    .row::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .img-fill {
+      width: 50%;
+      height: auto;
+      margin: 10px 0;
+    }
+
     /* Small devices (landscape phones, 576px and up) */
     @media (min-width: 576px) {}
 
@@ -91,13 +115,12 @@
 
 <body>
   <div class="container-fluid">
-    <header class="row bg-primary text-warning py-3">
+    <header class="row bg-primary text-warning py-3 text-center">
       <div class="col">
         <h1>Newport Historic Spring</h1>
       </div>
     </header>
-
-    <section class="row">
+    <section class="row bg-primary text-warning">
       <div class="col-md-8 col-lg-9 col-xl-10 order-md-2 px-0">
         <div id="map"></div>
       </div>
@@ -117,7 +140,44 @@
       </aside>
     </section>
 
-    <footer class="row bg-primary text-warning py-3">
+    <section>
+      <div class="row bg-primary text-warning text-center">
+        <h1 class="py-2">What Was Found?</h1>
+        <p>Some of the artifacts include a number of porcelain sherds, clay smoking pipes, different colored glassware,
+          and
+          various faunal remains.</p>
+        <div class="first-column">
+          <img src="graphics/porce.jpg" alt="porcelain" class="img-fill">
+          <div class="caption">
+            A photo of a piece of porcelain that has a maker's mark. Historically, ceramics have a maker's mark that
+            leads to
+            a company or person who created the piece and tends to be a great source for dating.
+          </div>
+          <img src="graphics/glass.jpg" alt="glass" class="img-fill">
+          <div class="caption">
+            A photo of glass with lead covering. In colonial times, some glassware was wrapped in lead or tin and was
+            eventually changed due to people
+            understanding their toxic traits.
+          </div>
+        </div>
+
+        <div class="second-column">
+          <img src="graphics/pipe.jpg" alt="pipe" class="img-fill">
+          <div class="caption">
+            A photo of a clay smoking pipe stem dated from 1725-1780. By measuring the diameter of the opening of the
+            pipe stem, one can accurately date
+            the artifact due to the styles being changed very few decades.
+          </div>
+          <img src="graphics/bone.jpg" alt="faunal remains" class="img-fill">
+          <div class="caption">
+            A photo of faunal remains, pieced back together. Based on what faunal remains are found, archaeologists can
+            interpret what diets individuals had
+            in specific regions and time periods.
+          </div>
+        </div>
+    </section>
+
+    <footer class="row bg-warning text-primary py-3">
       <div class="col">
         <ul class="list-unstyled">
           <li>Authored By: <a href="#">Marcus Rodriguez</a></li>
@@ -167,7 +227,7 @@
 
     // request a basemap tile layer and add to the map
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 20,
     }).addTo(map);
 
@@ -180,7 +240,7 @@
     const labels = {
       "porce": "Total porcelain found",
       "glass": "Total glass found",
-      "pipes": "Total smoking clay pipes found",
+      "pipes": "Total clay smoking pipes found",
       "bone": "Total faunal remains found"
     }
 
