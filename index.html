@@ -1,406 +1,395 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <title>US Unemployment Rates</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>NHS</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,800;1,800&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      background: #0f0f0f;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 400;
+    }
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
-    <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.1/papaparse.min.js"
-        integrity="sha512-EbdJQSugx0nVWrtyK3JdQQ/03mS3Q1UiAhRtErbwl1YL/+e2hZdlIcSURxxh7WXHTzn83sjlh2rysACoJGfb6g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
+    h1 {
+      font-weight: 800;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+    }
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: whitesmoke;
-            font-family: Lato, sans-serif;
-            color: #0d0000;
-        }
+    h3 {
+      color: white;
+    }
 
-        h1 {
-            position: absolute;
-            z-index: 650;
-            top: 10px;
-            left: 15px;
-            padding: 8px 15px;
-            margin: 0;
-            color: whitesmoke;
-            font-size: 1.5em;
-            background: rgba(25, 25, 25, 0.8);
-            border-radius: 5px;
-        }
+    a {
+      color: white;
+    }
 
-        h2 {
-            display: inline-block;
-            color: #95a3ad;
-        }
+    p {
+      line-height: 1.7rem;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+    }
 
-        #map {
-            position: absolute;
-            width: 100%;
-            top: 0;
-            bottom: 0;
-        }
+    #map {
+      height: 80vh;
+      background: white;
+    }
 
-        footer {
-            padding: 6px 10%;
-            width: 80%;
-        }
+    #legend {
+      font-size: 1rem;
+      border-radius: 5px;
+      max-width: 200px;
+      font-family: 'Open Sans', sans-serif;
+    }
 
-        p {
-            font-size: 1em;
-            color: #001323;
-        }
+    #legend span {
+      width: 20px;
+      height: 20px;
+      float: left;
+      margin: 0 10px 4px 0;
+    }
 
-        .legend {
-            padding: 6px 8px;
-            font-size: 1em;
-            background: rgba(75, 75, 75, 0.8);
-            color: whitesmoke;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            width: 160px;
-        }
+    #legend label {
+      font-size: 0.9rem;
+    }
 
-        .legend h3 {
-            font-size: 1.1em;
-            font-weight: bold;
-            line-height: 1em;
-            color: whitesmoke;
-            margin: 0;
-        }
+    #legend label:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
 
-        .legend h3 span {
-            font-size: 1.3em;
-            margin: 0 20px 0 0;
-        }
+    /* Small devices (landscape phones, 576px and up) */
+    @media (min-width: 576px) {}
 
-        .legend ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 12px 4px 0;
-        }
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) {
 
-        .legend li {
-            list-style-type: none;
-            height: 22px;
-        }
+      aside {
+        height: 80vh;
+      }
+    }
 
-        .legend span {
-            width: 30px;
-            height: 20px;
-            float: left;
-            margin-right: 10px;
-        }
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px) {}
 
-        #ui-controls {
-            width: 176px;
-            padding: 8px 25px 8px 15px;
-            background: rgba(75, 75, 75, 0.8);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            color: whitesmoke;
-        }
+    /* Extra large devices (large desktops, 1200px and up) */
+    @media (min-width: 1200px) {}
+  </style>
 
-        #ui-controls .min {
-            float: left;
-        }
-
-        #ui-controls .max {
-            float: right;
-            margin-right: -15px;
-        }
-
-        .year-slider {
-            width: 100%;
-        }
-
-        label {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-    </style>
 </head>
 
 <body>
-    <h1>US Unemployment Rates: 2001 &ndash; 2015</h1>
-    <div id="map"></div>
-    <div id="ui-controls">
-        <label>
-            <span class="min">2001</span>
-            <span class="max">2015</span>
-            <input type="range" min="2001" , max="2015" , value="2001" , step="1" , class="year-slider" />
-        </label>
-    </div>
+  <div class="container-fluid">
+    <header class="row bg-primary text-warning py-3">
+      <div class="col">
+        <h1>NewPort Historic Spring</h1>
+      </div>
+    </header>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.2/chroma.min.js"
-        integrity="sha512-8TVPS0EFkkmtT6yPb5K4csnSt3tjbKRrs0F8gvTNKv2OxOcwDO7+Klkz86gMVrzfqtZos5N2a+k+r9D+hlccmQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
-    <script>
-        // map options
-        const options = {
-            scrollWheelZoom: true,
-            zoomSnap: 0.1,
-            dragging: true,
-            zoomControl: false,
-            center: [38.801307, -95.360327],
-            zoom: 4.5
-        };
+    <section class="row">
+      <div class="col-md-8 col-lg-9 col-xl-10 order-md-2 px-0">
+        <div id="map"></div>
+      </div>
+      <aside id="about" class="col-md-4 col-lg-3 col-xl-2 order-md-1 text-primary py-2 pl-3 bg-warning overflow-auto">
+        <section>
+          <h3 class="py-2">Background</h3>
+          <p>The Newport Historic Spring used to be the main water source for Newport, Rhode Island. What started out as
+            a natural spring in which colonists as well as
+            indigenous individuals used, turned into a wellspring that became the central point of Newport. The well was
+            connected to houses through wooden pipes, which were eventually
+            replaced with metal pipes. Around the wellspring, houses were built, a stable was put in its place, and
+            eventually the spring was no longer used and even a gas station was built
+            upon it most recently. In an effort to preserve the its history, a nonprofit organization (Church Community
+            Housing Corporation) hired an archaeological team to analyze the site
+            before turning it into a public park in the future.</p>
+        </section>
+      </aside>
+    </section>
 
-        // create the Leaflet map
-        const map = L.map("map", options);
+    <footer class="row bg-primary text-warning py-3">
+      <div class="col">
+        <ul class="list-unstyled">
+          <li>Authored By: <a href="#">Marcus Rodriguez</a></li>
+          <li>Data Source: <a href="https://newportspring.org/">Newport Historic Spring</a></li>
+          <li>See my projects on GitHub: <a href="https://github.com/marcus3663">Marcus3663</a></li>
+          <li>Coordinate Data: <a href="https://studio.mapbox.com/">Mapbox Studio</a></li>
+          <li>Map Data: <a href="http://leafletjs.com/">Leaflet</a> </li>
+          <li>Map Created: June 30th, 2022</li>
+        </ul>
+      </div>
+    </footer>
+  </div>
 
-        // request tiles and add to map
-        const tiles = L.tileLayer(
-            "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.{ext}", {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            subdomains: "abcd",
-            ext: "png",
+  <!-- legend is outside of container-fluid and will be dynamically added to map -->
+  <div class="bg-primary py-2 px-3 ml-3 mt-3 text-warning" id="legend"></div>
+
+  <!-- ui is outside of container-fluid and will be dynamically added to map -->
+  <div class="form-group mr-3 mt-3" id="dropdown-ui">
+    <select class="form-control bg-primary text-warning">
+      <option value="porce" selected>Porcelain</option>
+      <option value="glass">Glassware </option>
+      <option value="pipes">Smoking Pipes</option>
+      <option value="bone">Faunal Remains</option>
+  </div>
+
+  <!-- Add Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+    integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+    crossorigin="anonymous"></script>
+  <!-- then Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+  <!-- then Simple Statistics -->
+  <script src='https://unpkg.com/simple-statistics@7.7.0/dist/simple-statistics.min.js'></script>
+  <script>
+    // initial Leaflet map options
+    const options = {
+      zoomSnap: 0.1,
+      // center: [40, -90],
+      // zoom: 4,
+      zoomControl: false,
+    };
+    // create Leaflet map and apply options
+    const map = L.map("map", options);
+    new L.control.zoom({ position: "bottomright" }).addTo(map);
+
+    // request a basemap tile layer and add to the map
+    // L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    // 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // }).addTo(map);
+
+    // set global variables for map layer,
+    // mapped attribute, and normalizing attribute
+    let attributeValue = "porce";
+    const normValue = "Tporce";
+
+    // create object to hold legend titles
+    const labels = {
+      "porce": "Total porcelain found",
+      "glass": "Total glass found",
+      "pipes": "Total smoking clay pipes found",
+      "bone": "Total faunal remains found"
+    }
+
+    // fetch data from a remote source
+    fetch("data/nhs_final.geojson")
+      // after it is returned...
+      .then(function (response) {
+        // if has a property called ok, and it is true
+        if (response.ok) {
+          // The API call was successful!
+          // Parse the JSON into a useable format, then return it
+          return response.json();
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        ).addTo(map);
+      })
+      // The returned response is now data in a new then method
+      .then(function (data) {
+        // This is the JSON from our response
+        // console.log parameters first.
+        console.log(data);
+        // call draw map and send data as parameter
+        drawMap(data);
+      });
 
-        // AJAX request for GeoJSON data
-        fetch('data/nhs.json')
-            .then(function (response) {
-                console.log(response);
-                return response.json();
-            })
-            .then(function (grids) {
-                console.log(grids);
+    function drawMap(data) {
+      // console.log(data); // data is now accessible here
+      // create Leaflet data layer and add to map
+      const grids = L.geoJson(data, {
+        // style grids with initial default path options
+        style: function (feature) {
+          return {
+            color: "#20282e",
+            weight: 2,
+            fillOpacity: 1,
+            fillColor: "#1f78b4",
+          };
+        },
+        // add hover/touch functionality to each feature layer
+        onEachFeature: function (feature, layer) {
+          // when mousing over a layer
+          layer.on("mouseover", function () {
+            // change the stroke color and bring that element to the front
+            layer
+              .setStyle({
+                color: "gold",
+              })
+              .bringToFront();
+          });
 
-                Papa.parse('data/nhs.csv', {
-                    download: true,
-                    header: true,
-                    complete: function (data) {
-                        // Create function to join data and grids
-                        processData(grids, data);
-                    }
-                });
-            })
-            .catch(function (error) {
-                console.log(`Ruh roh! An error has occurred`, error);
+          // on mousing off layer
+          layer.on("mouseout", function () {
+            // reset the layer style to its original stroke color
+            layer.setStyle({
+              color: "#20282e",
             });
-        function processData(grids, data) {
+          });
+        },
+      }).addTo(map);
+      // fit the map's bounds and zoom level using the grids extent
+      map.fitBounds(grids.getBounds(), {
+        padding: [18, 18], // add padding around grids
+      });
+      updateMap(grids); // draw the map
+      addUi(grids); // add the UI controls
+    }
 
-            // loop through all the grids
-            for (let i of grids.features) {
+    function updateMap(grids) {
+      // you could log grids to console here to
+      // verify the Leaflet layers object is not accessible
+      // and scoped within this function
+      console.log(grids);
 
-                // for each of the CSV data rows
-                for (let j of data.data) {
+      // get the class breaks for the current data attribute
+      const breaks = getClassBreaks(grids);
 
-                    // if the grids fips code and data fips code match
-                    if (i.properties.NAME === j.Grid) {
+      // loop through each county layer to update the color and tooltip info
+      grids.eachLayer(function (layer) {
+        const props = layer.feature.properties;
 
-                        // Add a new property to hold the unemployment rates
-                        i.properties = j;
+        // set the fill color of layer based on its normalized data value
+        layer.setStyle({
+          fillColor: getColor(props[attributeValue] / props[normValue], breaks),
+        });
 
-                        // no need to keep looping, break from inner loop
-                        break;
-                    }
-                }
-            } // end of outer loop
+        // assemble string sequence of info for tooltip (end line break with + operator)
+        let tooltipInfo = `<b>${props["NAME"]} Grid</b></br>
+    ${props[attributeValue].toLocaleString()}`;
 
-            console.log('after: ', grids);
+        // bind a tooltip to layer with county-specific information
+        layer.bindTooltip(tooltipInfo, {
+          // sticky property so tooltip follows the mouse
+          sticky: true,
+        });
+      });
 
-            // empty array to store all the data values
-            const rates = [];
+      // update the legend with the current data attribute information
+      addLegend(breaks);
+      updateLegend(breaks);
+    }
 
-            // iterate through all the grids
-            grids.features.forEach(function (grids) {
+    // Get class breaks in data
+    function getClassBreaks(grids) {
+      // create empty Array for storing values
+      const values = [];
 
-                // iterate through all the props of each grids
-                for (const prop in grids.properties) {
+      // loop through all the grids
+      grids.eachLayer(function (layer) {
+        let value =
+          layer.feature.properties[attributeValue] /
+          layer.feature.properties[normValue];
+        values.push(value); // push the normalized value for each layer into the Array
+      });
 
-                    // if the attribute is a number and not one of the fips codes or name
-                    if (prop != "Grid") {
+      // determine similar clusters
+      const clusters = ss.ckmeans(values, 5);
 
-                        // push that attribute value into the array
-                        rates.push(Number(grids.properties[prop]));
-                    }
-                }
-            });
+      // create an array of the lowest value within each cluster
+      const breaks = clusters.map(function (cluster) {
+        return [cluster[0], cluster.pop()];
+      });
 
-            // verify the result!
-            console.log(rates);
-            // create class breaks
-            var breaks = chroma.limits(rates, 'q', 5);
+      //return array of arrays, e.g., [[0.24,0.25], [0.26, 0.37], etc]
+      return breaks;
+    }
 
-            // create color generator function
-            var colorize = chroma.scale(chroma.brewer.BuGn)
-                .classes(breaks)
-                .mode('lab');
+    // Get color of county
+    function getColor(d, breaks) {
+      // function accepts a single normalized data attribute value
+      // and uses a series of conditional statements to determine which
+      // which color value to return to return to the function caller
 
-            console.log(colorize) // function (a){var b;return b=s(u(a)),m&&b[m]?b[m]():b}
+      if (d <= breaks[0][1]) {
+        return "#edf8fb";
+      } else if (d <= breaks[1][1]) {
+        return "#b3cde3";
+      } else if (d <= breaks[2][1]) {
+        return "#8c96c6";
+      } else if (d <= breaks[3][1]) {
+        return "#8856a7";
+      } else if (d <= breaks[4][1]) {
+        return "#810f7c";
+      }
+    }
 
-            // var color = colorize(20);
-            // console.log(color); // a {_rgb: Array[4]}
+    // Add legend to map
+    function addLegend(breaks) {
+      // check your console to verify the breaks array
+      console.log(breaks);
 
-            drawMap(grids, colorize);
+      // create a new Leaflet control object, and position it top left
+      const legendControl = L.control({ position: "topleft" });
 
-            drawLegend(breaks, colorize);
-        } // end processData()
+      // when the legend is added to the map
+      legendControl.onAdd = function () {
+        // select a div element with an id attribute of legend
+        const legend = L.DomUtil.get("legend");
 
-        function drawMap(grids, colorize) {
-            // create Leaflet object with geometry data and add to map
-            const dataLayer = L.geoJson(grids, {
-                style: function (feature) {
-                    return {
-                        color: "black",
-                        weight: 1,
-                        fillOpacity: 1,
-                        fillColor: "#1f78b4"
-                    };
-                },
+        // disable scroll and click/touch on map when on legend
+        L.DomEvent.disableScrollPropagation(legend);
+        L.DomEvent.disableClickPropagation(legend);
 
-                onEachFeature: function (feature, layer) {
+        // return the selection to the method
+        return legend;
+      };
 
-                    // when mousing over a layer
-                    layer.on('mouseover', function () {
-
-                        // change the stroke color and bring that element to the front
-                        layer.setStyle({
-                            color: 'yellow',
-                            weight: 3
-                        }).bringToFront();
-                    });
-
-                    // on mousing off layer
-                    layer.on('mouseout', function () {
-                        // reset the layer style to its original stroke color
-                        layer.setStyle({
-                            color: 'black',
-                            weight: 1
-                        });
-                    });
-
-                } //end of on each feature
-            }).addTo(map);
-
-            // create the slider
-            createSliderUI(dataLayer, colorize);
-
-            //call to color map with initial timestamp
-            updateMap(dataLayer, colorize, '2001');
-        } // end drawMap()
-
-        function updateMap(dataLayer, colorize, currentYear) {
-
-            // loop through each layer
-            dataLayer.eachLayer(function (layer) {
-
-                // shorthand for properties
-                const props = layer.feature.properties;
-
-                // update the layer color for given timestamp
-                layer.setStyle({
-                    fillColor: colorize(Number(props[currentYear]))
-                });
-
-                // build the tooltip
-                const tooltip = `<b>${props['NAME']} </b><br/>
-                Unemployment:  ${props[currentYear]}%`;
-
-                // bind tooltip
-                layer.bindTooltip(tooltip, {
-                    sticky: true
-                });
-
-            });
-
-        } // end updateMap()
-
-        function drawLegend(breaks, colorize) {
-
-            // create a Leaflet control for the legend
-            const legendControl = L.control({
-                position: 'topright'
-            });
-
-            // when the control is added to the map
-            legendControl.onAdd = function (map) {
-
-                // create a new division element with class of 'legend' and return
-                const legend = L.DomUtil.create('div', 'legend');
-                return legend;
-            };
-
-            // add the legend control to the map
-            legendControl.addTo(map);
-
-            // select div and create legend title
-            const legend = document.querySelector('.legend')
-            legend.innerHTML = "<h3><span>2001</span> Unemployment Rates</h3><ul>";
-
-            // loop through the break values
-            for (let i = 0; i < breaks.length - 1; i++) {
-
-                // determine color value 
-                const color = colorize(breaks[i], breaks);
-
-                // create legend item
-                const classRange = `<li><span style="background:${color}"></span>
-                ${breaks[i].toLocaleString()}% &mdash;
-                ${breaks[i + 1].toLocaleString()}% </li>`
-
-                // append to legend unordered list item
-                legend.innerHTML += classRange;
-            }
-            // close legend unordered list
-            legend.innerHTML += "</ul>";
-            console.log(breaks);
-        } // end drawLegend()
+      // add the empty legend div to the map
+      legendControl.addTo(map);
 
 
-        function createSliderUI(dataLayer, colorize) {
+    }
+    function updateLegend(breaks) {
+      // 		// select the legend, add a title, begin an unordered list and assign to a variable
+      const legend = document.querySelector("#legend")
+      legend.innerHTML = `<h5>${labels[attributeValue]}</h5>`;
 
-            // create Leaflet control for the slider
-            const sliderControl = L.control({ position: 'bottomleft' });
+      // 		// loop through the Array of classification break values
+      for (let i = 0; i <= breaks.length - 1; i++) {
+        let color = getColor(breaks[i][0], breaks);
 
-            // when added to the map
-            sliderControl.onAdd = function (map) {
+        legend.innerHTML +=
+          `<div><span style="background:${color}"></span>
+			  <label>${(breaks[i][0] * 100).toLocaleString()} &mdash;
+			  ${(breaks[i][1] * 100).toLocaleString()}%</label></div>`
+      }
+    }
 
-                // select an existing DOM element with an id of "ui-controls"
-                const slider = L.DomUtil.get("ui-controls");
 
-                // disable scrolling of map while using controls
-                L.DomEvent.disableScrollPropagation(slider);
+    function addUi(grids) {
+      // create the slider control
+      var selectControl = L.control({ position: "topright" });
+      // L.DomUtil.get("dropdown-ui");
+      // when control is added
+      selectControl.onAdd = function () {
+        // get the element with id attribute of ui-controls
+        return L.DomUtil.get("dropdown-ui");
+      };
+      // add the control to the map
+      selectControl.addTo(map);
 
-                // disable click events while using controls
-                L.DomEvent.disableClickPropagation(slider);
+      const dropdown = document.querySelector('#dropdown-ui select')
+      dropdown.addEventListener('change', function (e) {
+        // get the value of the selected option
+        attributeValue = e.target.value;
 
-                // return the slider from the onAdd method
-                return slider;
-            }
-
-            // select the form element
-            const slider = document.querySelector(".year-slider");
-
-            // listen for changes on input element
-            slider.addEventListener("input", function (e) {
-                // get the value of the selected option
-                const currentYear = e.target.value;
-                // update the map with current timestamp
-                updateMap(dataLayer, colorize, currentYear);
-                // update timestamp in legend heading
-                document.querySelector(".legend h3 span").innerHTML = currentYear;
-            });
-
-            // add the control to the map
-            sliderControl.addTo(map);
-
-        } // end createSliderUI()
-    </script>
+        // update the map
+        updateMap(grids);
+      });
+    }
+  </script>
 </body>
 
 </html>
