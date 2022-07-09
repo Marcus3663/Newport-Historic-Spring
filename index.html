@@ -234,7 +234,7 @@
     // set global variables for map layer,
     // mapped attribute, and normalizing attribute
     let attributeValue = "porce";
-    const normValue = "Tporce";
+    let normValue = "Tporce";
 
     // create object to hold legend titles
     const labels = {
@@ -445,6 +445,7 @@
       dropdown.addEventListener('change', function (e) {
         // get the value of the selected option
         attributeValue = e.target.value;
+        normValue = `T${attributeValue}`;
 
         // update the map
         updateMap(grids);
